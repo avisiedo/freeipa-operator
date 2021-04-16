@@ -36,8 +36,23 @@ spec:
           spec:
             description: IDMSpec defines the desired state of Freeipa
             properties:
+              passwordSecret:
+                description: SecretReference represents a Secret Reference. It has
+                  enough information to retrieve secret in any namespace
+                properties:
+                  name:
+                    description: Name is unique within a namespace to reference a
+                      secret resource.
+                    type: string
+                  namespace:
+                    description: Namespace defines the space within which the secret
+                      name must be unique.
+                    type: string
+                type: object
               realm:
                 type: string
+            required:
+            - passwordSecret
             type: object
           status:
             description: IDMStatus defines the observed state of IDM

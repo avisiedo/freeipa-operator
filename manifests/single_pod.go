@@ -92,6 +92,15 @@ func MainPodForIDM(m *v1alpha1.IDM, baseDomain string) *corev1.Pod {
 						"--no-ssh",
 						"--verbose",
 					},
+					EnvFrom: []corev1.EnvFromSource{
+						{
+							SecretRef: &corev1.SecretEnvSource{
+								LocalObjectReference: corev1.LocalObjectReference{
+									Name: *m.Spec.PasswordSecret,
+								},
+							},
+						},
+					},
 					Env: []corev1.EnvVar{
 						{
 							Name:  "KRB5_TRACE",
@@ -112,11 +121,6 @@ func MainPodForIDM(m *v1alpha1.IDM, baseDomain string) *corev1.Pod {
 						{
 							Name:  "DEBUG_TRACE",
 							Value: "2",
-						},
-						// TODO Reference a secret here
-						{
-							Name:  "PASSWORD",
-							Value: "Secret123",
 						},
 						{
 							Name:  "NAMESPACE",

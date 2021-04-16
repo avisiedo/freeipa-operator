@@ -225,6 +225,45 @@ func (r *IDMReconciler) CreateServiceAccount(ctx context.Context, item *v1alpha1
 	return nil
 }
 
+// CreateSecrets Create a secret for he encrypted information
+func (r *IDMReconciler) CreateSecret(ctx context.Context, item *v1alpha1.IDM) error {
+	var err error
+	log := r.Log.WithValues("idm", item.Namespace)
+
+	if item.Spec.PasswordSecret != nil {
+		namespacedName := types.NamespacedName{
+			Namespace: item.Namespace,
+			Name:      *item.Spec.PasswordSecret,
+		}
+		found := &corev1.Secret{}
+		err = r.Get(ctx, namespacedName, found)
+		if err != nil {
+			if errors.IsNotFound(err) {
+				log.Info("Creating Secret")
+				manifest := manifests.SecretForIDM(item, manifests.GenerateRandomPassword())
+				ctrl.SetControllerReference(item, manifest, r.Scheme)
+				if err = r.Create(ctx, manifest); err != nil {
+					return err
+				}
+			} else {
+				return err
+			}
+		} else {
+			// TODO Update changes if any that affect to the Pod
+			log.Info("Currently the Main Pod exists")
+		}
+	} else {
+		log.Info("Creating Secret")
+		manifest := manifests.SecretForIDM(item, manifests.GenerateRandomPassword())
+		ctrl.SetControllerReference(item, manifest, r.Scheme)
+		if err = r.Create(ctx, manifest); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 // CreateMainPod Create the master freeipa pod
 func (r *IDMReconciler) CreateMainPod(ctx context.Context, item *v1alpha1.IDM) error {
 	var err error

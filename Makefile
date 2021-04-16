@@ -323,5 +323,7 @@ kind-long-tests:
 
 .PHONY: recreate-sample-idm
 recreate-sample-idm:
-	-kubectl delete idm idm-sample
+	-@kubectl delete idm idm-sample
+	-@kubectl delete secrets/idm-sample
+	kubectl create secret generic idm-sample --from-literal=PASSWORD=Secret124
 	kubectl apply -f ./config/samples/idm_v1alpha1_freeipa.yaml

@@ -25,7 +25,8 @@ import (
 
 // IDMSpec defines the desired state of Freeipa
 type IDMSpec struct {
-	Realm string `json:"realm,omitempty"`
+	Realm          string  `json:"realm,omitempty"`
+	PasswordSecret *string `json:"passwordSecret"`
 	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
 	// Important: Run "make" to regenerate code after modifying this file
 
