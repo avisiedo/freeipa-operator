@@ -129,6 +129,10 @@ func (r *IDMReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 		return ctrl.Result{}, err
 	}
 
+	if err := r.CreateVolumClaim(ctx, &idm); err != nil {
+		return ctrl.Result{}, err
+	}
+
 	if err := r.CreateMainPod(ctx, &idm); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -259,6 +263,44 @@ func (r *IDMReconciler) CreateSecret(ctx context.Context, item *v1alpha1.IDM) er
 		if err = r.Create(ctx, manifest); err != nil {
 			return err
 		}
+	}
+
+	return nil
+}
+
+// CreateVolumClaim Create the volum claim that will be used by the worload.
+func (r *IDMReconciler) CreateVolumClaim(ctx context.Context, item *v1alpha1.IDM) error {
+	var err error
+	namespacedName := types.NamespacedName{
+		Namespace: item.Namespace,
+		Name:      item.Name,
+	}
+	log := r.Log.WithValues(item.Name, namespacedName)
+	// if manifests.IsPersistentVolumeClaimSpecEmpty(&item.Spec.VolumeClaimTemplate) {
+	//      log.Info("VolumeTemplateClaim not defined, using emptyDir volume for storing data")
+	//      return nil
+	// }
+	if item.Spec.VolumeClaimTemplate == nil {
+		log.Info("VolumeTemplateClaim not defined, using emptyDir volume for storing data")
+		return nil
+	}
+	found := &corev1.PersistentVolumeClaim{}
+	err = r.Get(ctx, namespacedName, found)
+
+	if err != nil {
+		if errors.IsNotFound(err) {
+			log.Info("Creating Volume Claim")
+			manifest := manifests.MainPersistentVolumeClaimForIDM(item)
+			ctrl.SetControllerReference(item, manifest, r.Scheme)
+			if err = r.Create(ctx, manifest); err != nil {
+				return err
+			}
+		} else {
+			return err
+		}
+	} else {
+		// TODO Update changes if any that affect to the Pod
+		log.Info("Currently the Route exists")
 	}
 
 	return nil

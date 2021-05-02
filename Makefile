@@ -47,6 +47,7 @@ IMG ?= $(IMG_BASE)/$(IMG_NAME):$(IMG_TAG)
 CRD_OPTIONS ?= "crd:trivialVersions=true, crdVersions=v1"
 TEMPLATES_PATH ?= $(PWD)/config/templates
 SAMPLES_PATH ?= $(PWD)/config/samples
+SAMPLE ?= ephimeral-storage
 
 
 # Install kind by:
@@ -326,4 +327,5 @@ recreate-sample-idm:
 	-@kubectl delete idm idm-sample
 	-@kubectl delete secrets/idm-sample
 	kubectl create secret generic idm-sample --from-literal=PASSWORD=Secret124
-	kubectl apply -f ./config/samples/idm_v1alpha1_freeipa.yaml
+	-@kubectl apply $(SAMPLES_PATH)/$(SAMPLE) | kubectl delete -f -
+	kubectl apply $(SAMPLES_PATH)/$(SAMPLE) | kubectl create -f -

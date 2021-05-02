@@ -7,6 +7,29 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// GetDataVolumeForPod
+func GetDataVolumeForMainPod(m *v1alpha1.IDM) corev1.Volume {
+	if m.Spec.VolumeClaimTemplate == nil {
+		return corev1.Volume{
+			Name: "data",
+			VolumeSource: corev1.VolumeSource{
+				EmptyDir: &corev1.EmptyDirVolumeSource{
+					Medium: corev1.StorageMediumDefault,
+				},
+			},
+		}
+	} else {
+		return corev1.Volume{
+			Name: "data",
+			VolumeSource: corev1.VolumeSource{
+				PersistentVolumeClaim: &corev1.PersistentVolumeClaimVolumeSource{
+					ClaimName: GetMainPersistentVolumeClaimName(m),
+				},
+			},
+		}
+	}
+}
+
 // MainPodForIDM return a master pod for an IDM CRD
 func MainPodForIDM(m *v1alpha1.IDM, baseDomain string) *corev1.Pod {
 	sDirectoryOrCreate := corev1.HostPathDirectoryOrCreate
@@ -196,12 +219,7 @@ func MainPodForIDM(m *v1alpha1.IDM, baseDomain string) *corev1.Pod {
 				},
 			},
 			Volumes: []corev1.Volume{
-				{
-					Name: "data",
-					VolumeSource: corev1.VolumeSource{
-						EmptyDir: &corev1.EmptyDirVolumeSource{},
-					},
-				},
+				GetDataVolumeForMainPod(m),
 				{
 					Name: "systemd-sys",
 					VolumeSource: corev1.VolumeSource{

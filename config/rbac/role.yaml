@@ -155,3 +155,11 @@ rules:
       - "securitycontextconstraints"
     verbs:
       - "use"
+
+  - apiGroups: [""]
+    resources:
+      - "persistentvolumeclaims"
+    verbs:
+      - "list"
+      - "create"
+      - "watch"
