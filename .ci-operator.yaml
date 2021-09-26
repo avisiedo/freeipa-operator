@@ -1,4 +1,136 @@
+# https://steps.ci.openshift.org/ci-operator-reference
+---
+# yamllint disable rule:line-length
+# yamllint disable rule:comments
+
+# The list of base images describe
+# which images are going to be necessary outside
+# of the pipeline. The key will be the alias that other
+# steps use to refer to this image.
+# base_images:
+#     "":
+#         # As is an optional string to use as the intermediate name for this reference.
+#         as: ' '
+#         name: ' '
+#         namespace: ' '
+#         tag: ' '
+
+
+# BuildRootImage supports two ways to get the image that
+# the pipeline will caches on. The one way is to take the reference
+# from an image stream, and the other from a dockerfile.
 build_root:
+
+  # image_stream_tag:
+  #     # As is an optional string to use as the intermediate name for this reference.
+  #     as: ' '
+  #     name: ' '
+  #     namespace: ' '
+  #     tag: ' '
+
   project_image:
-    dockerfile_path: Dockerfile
-    context_dir: .
+
+    # BuildArgs contains build arguments that will be resolved in the Dockerfile.
+    # See https://docs.docker.com/engine/reference/builder/#/arg for more details.
+    # build_args:
+    #     - # Name of the build arg.
+    #       name: ' '
+    #       # Value of the build arg.
+    #       value: ' '
+
+    # ContextDir is the directory in the project
+    # from which this build should be run.
+    context_dir: '.'
+
+    # DockerfileLiteral can be used to provide an inline Dockerfile.
+    # Mutually exclusive with DockerfilePath.
+    # dockerfile_literal: ""
+
+    # DockerfilePath is the path to a Dockerfile in the
+    # project to run relative to the context_dir.
+    dockerfile_path: 'Dockerfile'
+    # Inputs is a map of tag reference name to image input changes
+    # that will populate the build context for the Dockerfile or
+    # alter the input image for a multi-stage build.
+    inputs:
+      "":
+        # As is a list of multi-stage step names or image names that will
+        # be replaced by the image reference from this step. For instance,
+        # if the Dockerfile defines FROM nginx:latest AS base, specifying
+        # either "nginx:latest" or "base" in this array will replace that
+        # image with the pipeline input.
+        as:
+          - ""
+        # Paths is a list of paths to copy out of this image and into the
+        # context directory.
+        paths:
+          # DestinationDir is the directory in the destination image to copy
+          # to.
+          # SourcePath is a file or directory in the source image to copy from.
+          - destination_dir: ' '
+            source_path: ' '
+
+
+# Images describes the images that are built
+# baseImage the project as part of the release
+# process. The name of each image is its "to" value
+# and can be used to build only a specific image.
+images:
+  - # BuildArgs contains build arguments that will be resolved in the Dockerfile.
+    # See https://docs.docker.com/engine/reference/builder/#/arg for more details.
+    # build_args:
+    #   - # Name of the build arg.
+    #     name: ' '
+    #     # Value of the build arg.
+    #     value: ' '
+
+    # ContextDir is the directory in the project
+    # from which this build should be run.
+    context_dir: '.'
+
+    # DockerfileLiteral can be used to provide an inline Dockerfile.
+    # Mutually exclusive with DockerfilePath.
+    # dockerfile_literal: ""
+    # DockerfilePath is the path to a Dockerfile in the
+    # project to run relative to the context_dir.
+    dockerfile_path: 'Dockerfile'
+
+    # from: ' '
+
+    # Inputs is a map of tag reference name to image input changes
+    # that will populate the build context for the Dockerfile or
+    # alter the input image for a multi-stage build.
+    # inputs:
+    #   "":
+    #       # As is a list of multi-stage step names or image names that will
+    #       # be replaced by the image reference from this step. For instance,
+    #       # if the Dockerfile defines FROM nginx:latest AS base, specifying
+    #       # either "nginx:latest" or "base" in this array will replace that
+    #       # image with the pipeline input.
+    #       as:
+    #           - ""
+    #       # Paths is a list of paths to copy out of this image and into the
+    #       # context directory.
+    #       paths:
+    #           - # DestinationDir is the directory in the destination image to copy
+    #             # to.
+    #             destination_dir: ' '
+    #             # SourcePath is a file or directory in the source image to copy from.
+    #             source_path: ' '
+
+    to: 'quay.io/avisied0/freeipa-openshift-container:ci-operator'
+
+tests:
+  - as: unit
+    commands: make test
+    container:
+      from: src
+
+resources:
+  "*":
+    limits:
+      cpu: "2000m"
+      memory: "2Gi"
+    requests:
+      cpu: "1000m"
+      memory: "2Gi"
