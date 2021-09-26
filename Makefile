@@ -356,3 +356,7 @@ sample-create: check-password
 
 .PHONY: sample-recreate
 sample-recreate: sample-delete sample-create
+
+.PHONY: ci-operator
+ci-operator:
+	ci-operator --config .ci-operator.yaml --git-ref freeipa/freeipa-operator@master
