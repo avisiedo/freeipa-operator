@@ -49,26 +49,27 @@ build_root:
     # DockerfilePath is the path to a Dockerfile in the
     # project to run relative to the context_dir.
     dockerfile_path: 'Dockerfile'
+
     # Inputs is a map of tag reference name to image input changes
     # that will populate the build context for the Dockerfile or
     # alter the input image for a multi-stage build.
     inputs:
-      "":
+      "manager":
         # As is a list of multi-stage step names or image names that will
         # be replaced by the image reference from this step. For instance,
         # if the Dockerfile defines FROM nginx:latest AS base, specifying
         # either "nginx:latest" or "base" in this array will replace that
         # image with the pipeline input.
         as:
-          - ""
+          - "builder"
         # Paths is a list of paths to copy out of this image and into the
         # context directory.
         paths:
           # DestinationDir is the directory in the destination image to copy
           # to.
           # SourcePath is a file or directory in the source image to copy from.
-          - destination_dir: ' '
-            source_path: ' '
+          - destination_dir: '/workspace/'
+            source_path: 'manager'
 
 
 # Images describes the images that are built
