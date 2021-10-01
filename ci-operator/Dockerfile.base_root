@@ -1,0 +1,14 @@
+FROM registry.access.redhat.com/ubi8/ubi:8.4-211
+
+# hadolint ignore=DL3033,DL3013
+RUN yum install -y curl git make gcc glibc-devel m4 golang python3-pip python36-devel python36 \
+    && yum clean all \
+    && rpm -ivh https://www.rpmfind.net/linux/centos/8.4.2105/AppStream/x86_64/os/Packages/bison-3.0.4-10.el8.x86_64.rpm \
+    && pip3 install --no-cache-dir Mercurial \
+    && curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer -o /tmp/gvm-installer && bash /tmp/gvm-installer \
+    && bash -c "source /root/.gvm/scripts/gvm; gvm install go1.16" \
+    && bash -c "source /root/.gvm/scripts/gvm; gvm use go1.16 && env | grep ^GO"
+
+ENV GOPATH=/root/.gvm/pkgsets/go1.16/global
+ENV GOROOT=/root/.gvm/gos/go1.16
+ENV PATH=$GOROOT/bin:$PATH

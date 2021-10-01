@@ -1,4 +1,5 @@
 IMG_NAME := freeipa-operator
+BRANCH ?= master
 
 ifneq (,$(shell command -v podman 2>/dev/null))
 DOCKER := podman
@@ -66,7 +67,11 @@ else
 GOBIN := $(shell go env GOBIN)
 endif
 
-all: manager
+.PHONY: all
+all: build
+
+.PHONY: build
+build: manager
 
 # Empty rule to allow force other rules. The name of the rule should not
 # match any file.
@@ -359,4 +364,7 @@ sample-recreate: sample-delete sample-create
 
 .PHONY: ci-operator
 ci-operator:
-	ci-operator --config .ci-operator.yaml --git-ref freeipa/freeipa-operator@master
+	# oc import-image ubi8/ubi-minimal:8.4-210 --from=registry.access.redhat.com/ubi8/ubi-minimal:8.4-210 --confirm
+	#oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm
+	oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm
+	ci-operator --config ./ci-operator/config.yaml --git-ref freeipa/freeipa-operator@$(BRANCH)
