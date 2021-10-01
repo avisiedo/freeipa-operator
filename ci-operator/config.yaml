@@ -10,6 +10,7 @@
 
 # yamllint disable rule:line-length
 # yamllint disable rule:comments
+# yamllint disable rule:comments-indentation
 
 # The list of base images describe
 # which images are going to be necessary outside
