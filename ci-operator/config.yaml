@@ -144,13 +144,13 @@ images:
     #             # SourcePath is a file or directory in the source image to copy from.
     #             source_path: ' '
 
-    to: 'quay.io/avisied0/freeipa-openshift-container:ci-operator'
+    to: 'freeipa-operator'
 
 tests:
   - as: unit
     commands: make test
     container:
-      from: src
+      from: stable
 
 resources:
   "*":
