@@ -83,19 +83,35 @@ FORCE:
 help:
 	@cat HELP
 
+# Decoupled in build and execution for getting this ready for ci-operator
+.PHONY: build-test
+build-test:
+	[ -e testbin/ ] || mkdir testbin/
+	go test -c ./ -o ./testbin/bin/test_main -race -covermode=atomic
+	go test -c ./internal/arguments/ -o ./testbin/bin/test_arguments -race -covermode=atomic
+	go test -c ./manifests/ -o ./testbin/bin/test_manifests -race -covermode=atomic
+
+# TODO Prepare for coverage reports at GitHub
+# This could be helpful for integrating coverage reports in GitHub:
+# https://about.codecov.io/blog/getting-started-with-code-coverage-for-golang/
+#
+#
 # USE_EXISTING_CLUSTER={1,0}
 # Run tests
 ENVTEST_ASSETS_DIR:=$(shell pwd)/testbin
 .PHONY: test
 # idmocp-243 Workarounded by using the tool from v0.8.3 tag
-test: generate fmt vet manifests
+test: generate fmt vet manifests # build-tests
 	mkdir -p "$(ENVTEST_ASSETS_DIR)"
 	test -f "$(ENVTEST_ASSETS_DIR)/setup-envtest.sh" \
 	|| curl -sSLo "$(ENVTEST_ASSETS_DIR)/setup-envtest.sh" "https://raw.githubusercontent.com/kubernetes-sigs/controller-runtime/v0.8.3/hack/setup-envtest.sh"
 	source "$(ENVTEST_ASSETS_DIR)/setup-envtest.sh"; \
 	fetch_envtest_tools "$(ENVTEST_ASSETS_DIR)"; \
 	setup_envtest_env "$(ENVTEST_ASSETS_DIR)"; \
-	go test ./... -coverprofile cover.out
+	./testbin/bin/test_main ; \
+	./testbin/bin/test_arguments ; \
+	./testbin/bin/test_manifests ; \
+	# go test ./... -coverprofile cover.out
 
 # Build manager binary
 # https://www.reddit.com/r/golang/comments/9ai79z/correct_usage_of_go_modules_vendor_still_connects/

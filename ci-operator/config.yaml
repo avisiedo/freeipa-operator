@@ -28,8 +28,12 @@
 # BuildRootImage supports two ways to get the image that
 # the pipeline will caches on. The one way is to take the reference
 # from an image stream, and the other from a dockerfile.
-binary_build_commands: |
-  make build
+
+# build_root indicate the "development" image that we need to
+# build and launch any other pipeline steps.
+#
+# THIS IS NOT THE ARTIFACT IMAGE FOR OUR PROJECT
+#
 build_root:
   # image_stream_tag:
   #   name: release
@@ -42,10 +46,25 @@ build_root:
   #     name: ' '
   #     namespace: ' '
   #     tag: ' '
-  project_image:
-    context_dir: './ci-operator'
-    dockerfile_path: Dockerfile.base_root
 
+  # project_image:
+  #   build_args:
+  #     - name: WORKLOAD_IMAGE
+  #       value: quay.io/freeipa/freeipa-openshift-container:latest
+  #   context_dir: '.'
+  #   dockerfile_path: Dockerfile
+
+  project_image:
+    context_dir: '.'
+    dockerfile_path: ci-operator/Dockerfile.base_root
+
+binary_build_commands: |
+  make build
+
+build_root_image:
+  namespace: openshift
+  name: release
+  tag: golang-1.15
   # project_image:
 
   #   # BuildArgs contains build arguments that will be resolved in the Dockerfile.
@@ -94,63 +113,78 @@ build_root:
 # baseImage the project as part of the release
 # process. The name of each image is its "to" value
 # and can be used to build only a specific image.
-images:
-  # - dockerfile_path: Dockerfile
-  #   from: base
-  #   inputs:
-  #     bin:
-  #       paths:
+# images:
+#   # - dockerfile_path: Dockerfile
+#   #   from: base
+#   #   inputs:
+#   #     bin:
+#   #       paths:
 
 
-  - # BuildArgs contains build arguments that will be resolved in the Dockerfile.
-    # See https://docs.docker.com/engine/reference/builder/#/arg for more details.
-    # build_args:
-    #   - # Name of the build arg.
-    #     name: ' '
-    #     # Value of the build arg.
-    #     value: ' '
+#   - # BuildArgs contains build arguments that will be resolved in the Dockerfile.
+#     # See https://docs.docker.com/engine/reference/builder/#/arg for more details.
+#     # build_args:
+#     #   - # Name of the build arg.
+#     #     name: ' '
+#     #     # Value of the build arg.
+#     #     value: ' '
 
-    # ContextDir is the directory in the project
-    # from which this build should be run.
-    context_dir: '.'
+#     # ContextDir is the directory in the project
+#     # from which this build should be run.
+#     context_dir: '.'
 
-    # DockerfileLiteral can be used to provide an inline Dockerfile.
-    # Mutually exclusive with DockerfilePath.
-    # dockerfile_literal: ""
-    # DockerfilePath is the path to a Dockerfile in the
-    # project to run relative to the context_dir.
-    dockerfile_path: 'Dockerfile'
+#     # DockerfileLiteral can be used to provide an inline Dockerfile.
+#     # Mutually exclusive with DockerfilePath.
+#     # dockerfile_literal: ""
+#     # DockerfilePath is the path to a Dockerfile in the
+#     # project to run relative to the context_dir.
+#     dockerfile_path: 'Dockerfile'
 
-    # from: ' '
+#     # from: ' '
 
-    # Inputs is a map of tag reference name to image input changes
-    # that will populate the build context for the Dockerfile or
-    # alter the input image for a multi-stage build.
-    # inputs:
-    #   "":
-    #       # As is a list of multi-stage step names or image names that will
-    #       # be replaced by the image reference from this step. For instance,
-    #       # if the Dockerfile defines FROM nginx:latest AS base, specifying
-    #       # either "nginx:latest" or "base" in this array will replace that
-    #       # image with the pipeline input.
-    #       as:
-    #           - ""
-    #       # Paths is a list of paths to copy out of this image and into the
-    #       # context directory.
-    #       paths:
-    #           - # DestinationDir is the directory in the destination image to copy
-    #             # to.
-    #             destination_dir: ' '
-    #             # SourcePath is a file or directory in the source image to copy from.
-    #             source_path: ' '
+#     # Inputs is a map of tag reference name to image input changes
+#     # that will populate the build context for the Dockerfile or
+#     # alter the input image for a multi-stage build.
+#     # inputs:
+#     #   "":
+#     #       # As is a list of multi-stage step names or image names that will
+#     #       # be replaced by the image reference from this step. For instance,
+#     #       # if the Dockerfile defines FROM nginx:latest AS base, specifying
+#     #       # either "nginx:latest" or "base" in this array will replace that
+#     #       # image with the pipeline input.
+#     #       as:
+#     #           - ""
+#     #       # Paths is a list of paths to copy out of this image and into the
+#     #       # context directory.
+#     #       paths:
+#     #           - # DestinationDir is the directory in the destination image to copy
+#     #             # to.
+#     #             destination_dir: ' '
+#     #             # SourcePath is a file or directory in the source image to copy from.
+#     #             source_path: ' '
 
-    to: 'freeipa-operator'
+#     to: 'freeipa-operator'
+
+test_binary_build_commands: |
+  make build-test
 
 tests:
   - as: unit
-    commands: make test
+    commands: |
+      make test
     container:
-      from: stable
+      from: src
+
+images:
+  # Build the controller image by copying the results from the binary_build_commands
+  - dockerfile_literal: |-
+      FROM bin as builder
+      FROM gcr.io/distroless/static:nonroot
+      WORKDIR /
+      COPY --from=builder /go/src/github.com/freeipa/freeipa-operator/bin/manager .
+      USER nonroot:nonroot
+      ENTRYPOINT ["/manager"]
+    to: freeipa-operator
 
 resources:
   "*":
@@ -160,3 +194,11 @@ resources:
     requests:
       cpu: "1000m"
       memory: "2000Mi"
+
+  "crc":
+    limits:
+      cpu: "1000m"
+      memory: "1000Mi"
+    requests:
+      cpu: "1000m"
+      memory: "1000Mi"
