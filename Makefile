@@ -1,5 +1,6 @@
 IMG_NAME := freeipa-operator
 BRANCH ?= master
+GIT_SCOPE ?= freeipa/freeipa-operator
 
 ifneq (,$(shell command -v podman 2>/dev/null))
 DOCKER := podman
@@ -382,9 +383,14 @@ sample-create: check-password
 .PHONY: sample-recreate
 sample-recreate: sample-delete sample-create
 
+# Workaround 'unable to load in-cluster configuration'
+# If KUBECONFIG is not specified, then set it to the
+# $HOME/.kube/config that is where the cache for the
+# credentials is stored by kubectl or oc.
+KUBECONFIG ?= $(HOME)/.kube/config
 .PHONY: ci-operator
 ci-operator:
 	# oc import-image ubi8/ubi-minimal:8.4-210 --from=registry.access.redhat.com/ubi8/ubi-minimal:8.4-210 --confirm
 	#oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm
-	oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm 1>/dev/null 2>/dev/null
-	ci-operator --config ./ci-operator/config.yaml --git-ref freeipa/freeipa-operator@$(BRANCH)
+	# oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm 1>/dev/null 2>/dev/null
+	KUBECONFIG=$(KUBECONFIG) ci-operator --config ./ci-operator/config.yaml --git-ref $(GIT_SCOPE)@$(BRANCH)
