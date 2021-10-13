@@ -382,5 +382,5 @@ sample-recreate: sample-delete sample-create
 ci-operator:
 	# oc import-image ubi8/ubi-minimal:8.4-210 --from=registry.access.redhat.com/ubi8/ubi-minimal:8.4-210 --confirm
 	#oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm
-	oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm
+	oc import-image ubi8/ubi:8.4-211 --from=registry.access.redhat.com/ubi8/ubi:8.4-211 --confirm 1>/dev/null 2>/dev/null
 	ci-operator --config ./ci-operator/config.yaml --git-ref freeipa/freeipa-operator@$(BRANCH)
