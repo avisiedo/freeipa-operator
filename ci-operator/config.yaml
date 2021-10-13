@@ -62,9 +62,14 @@ binary_build_commands: |
   make build
 
 build_root:
-  namespace: openshift
-  name: release
-  tag: golang-1.15
+  project_image:
+    context_dir: '.'
+    dockerfile_path: ci-operator/Dockerfile.base_root
+
+# build_root:
+#   namespace: openshift
+#   name: release
+#   tag: golang-1.15
   # project_image:
 
   #   # BuildArgs contains build arguments that will be resolved in the Dockerfile.
