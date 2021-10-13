@@ -37,6 +37,10 @@ ifeq (,$(COMMIT_SHA))
 COMMIT_SHA := $(shell git rev-parse HEAD)
 endif
 
+
+GIT_HEAD_HASH := $(shell git show-ref --head grep HEAD | cut -d ' '  -f 1)
+GIT_REMOTE_REF := $(shell git show-ref | grep $(GIT_HEAD_HASH) | grep /remotes/ | cut -d ' ' -f 2)
+
 CONTAINER_IMAGE_FILE ?= $(IMG_NAME).tar
 
 IMG_TAG := dev-$(COMMIT_SHA)
