@@ -34,34 +34,34 @@
 #
 # THIS IS NOT THE ARTIFACT IMAGE FOR OUR PROJECT
 #
-build_root:
-  # image_stream_tag:
-  #   name: release
-  #   namespace: openshift
-  #   tag: golang-1.16
+# build_root:
+#   image_stream_tag:
+#     name: release
+#     namespace: openshift
+#     tag: golang-1.16
 
-  # image_stream_tag:
-  #     # As is an optional string to use as the intermediate name for this reference.
-  #     as: ' '
-  #     name: ' '
-  #     namespace: ' '
-  #     tag: ' '
+#   image_stream_tag:
+#       # As is an optional string to use as the intermediate name for this reference.
+#       as: ' '
+#       name: ' '
+#       namespace: ' '
+#       tag: ' '
 
-  # project_image:
-  #   build_args:
-  #     - name: WORKLOAD_IMAGE
-  #       value: quay.io/freeipa/freeipa-openshift-container:latest
-  #   context_dir: '.'
-  #   dockerfile_path: Dockerfile
+#   project_image:
+#     build_args:
+#       - name: WORKLOAD_IMAGE
+#         value: quay.io/freeipa/freeipa-openshift-container:latest
+#     context_dir: '.'
+#     dockerfile_path: Dockerfile
 
-  project_image:
-    context_dir: '.'
-    dockerfile_path: ci-operator/Dockerfile.base_root
+#   project_image:
+#     context_dir: '.'
+#     dockerfile_path: ci-operator/Dockerfile.base_root
 
 binary_build_commands: |
   make build
 
-build_root_image:
+build_root:
   namespace: openshift
   name: release
   tag: golang-1.15
