@@ -178,7 +178,7 @@ tests:
     commands: |
       make test
     container:
-      from: src
+      from: root
 
 images:
   # Build the controller image by copying the results from the binary_build_commands
