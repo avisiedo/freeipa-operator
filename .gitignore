@@ -71,3 +71,4 @@
 !tools/**/*
 tools/bin
 
+/cover.out
