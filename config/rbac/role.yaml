@@ -1,109 +1,115 @@
 apiVersion: rbac.authorization.k8s.io/v1
+
 kind: Role
+
 metadata:
-  creationTimestamp: null
   name: manager-role
+
 rules:
-- apiGroups:
-  - apps
-  resources:
-  - statefulsets
-  verbs:
-  - create
-  - get
-  - list
-  - update
-  - watch
-- apiGroups:
-  - coordination.k8s.io
-  resources:
-  - leases
-  verbs:
-  - create
-  - get
-  - list
-  - update
-- apiGroups:
-  - ''
-  resources:
-  - configmaps
-  verbs:
-  - create
-  - get
-  - update
-- apiGroups:
-  - ''
-  resources:
-  - events
-  verbs:
-  - create
-- apiGroups:
-  - ''
-  resources:
-  - secrets
-  verbs:
-  - create
-  - list
-  - watch
-- apiGroups:
-  - ''
-  resources:
-  - services
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - idmocp.redhat.com
-  resources:
-  - idms
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - idmocp.redhat.com
-  resources:
-  - idms/finalizers
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - idmocp.redhat.com
-  resources:
-  - idms/status
-  verbs:
-  - get
-  - patch
-  - update
-- apiGroups:
-  - route.openshift.io
-  resources:
-  - routes
-  verbs:
-  - create
-  - list
-  - watch
-- apiGroups:
-  - route.openshift.io
-  resources:
-  - routes/custom-host
-  verbs:
-  - create
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - restricted
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - use
+
+  - apiGroups:
+      - ''
+    resources:
+      - configmaps
+    verbs:
+      - create
+      - get
+      - update
+
+  - apiGroups:
+      - ''
+    resources:
+      - events
+    verbs:
+      - create
+
+  - apiGroups:
+      - ''
+    resources:
+      - secrets
+    verbs:
+      - create
+      - list
+      - watch
+
+  - apiGroups:
+      - ''
+    resources:
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - create
+      - get
+      - list
+      - update
+      - watch
+
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - create
+      - get
+      - list
+      - update
+
+  - apiGroups:
+      - idmocp.redhat.com
+    resources:
+      - idms
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+
+  - apiGroups:
+      - idmocp.redhat.com
+    resources:
+      - idms/finalizers
+      - idms/status
+    verbs:
+      - get
+      - patch
+      - update
+
+  - apiGroups:
+      - route.openshift.io
+    resources:
+      - routes
+    verbs:
+      - create
+      - list
+      - watch
+
+  - apiGroups:
+      - route.openshift.io
+    resources:
+      - routes/custom-host
+    verbs:
+      - create
+
+  - apiGroups:
+      - security.openshift.io
+    resourceNames:
+      - restricted
+    resources:
+      - securitycontextconstraints
+    verbs:
+      - use

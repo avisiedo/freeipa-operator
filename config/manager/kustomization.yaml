@@ -14,4 +14,4 @@ configMapGenerator:
 images:
 - name: controller
   newName: quay.io/freeipa/freeipa-operator
-  newTag: nightly
+  newTag: latest
