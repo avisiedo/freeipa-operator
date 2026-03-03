@@ -20,6 +20,9 @@ WATCH_NAMESPACE ?= $(shell oc project -q 2>/dev/null)
 export WATCH_NAMESPACE
 endif
 
+export PATH
+PATH:="$(PATH):$(PWD)/tools/bin"
+
 # Include sample rules
 include mk/scorecard.mk
 include mk/checks.mk
@@ -29,3 +32,4 @@ include mk/miscelanea.mk
 include mk/deprecated.mk
 include mk/bundle.mk
 include mk/tools.mk
+include mk/tools-2.mk
