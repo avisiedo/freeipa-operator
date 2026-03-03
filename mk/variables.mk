@@ -1,3 +1,5 @@
+WATCH_NAMESPACE ?= freeipa
+
 # When running in github actions the env var CI is set to true
 # Here we set customizations when running Makefile on it
 ifeq (true,$(CI))
