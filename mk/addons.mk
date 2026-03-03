@@ -24,6 +24,7 @@ export PATH
 PATH:="$(PATH):$(PWD)/tools/bin"
 
 # Include sample rules
+include mk/container.mk
 include mk/scorecard.mk
 include mk/checks.mk
 include mk/samples.mk

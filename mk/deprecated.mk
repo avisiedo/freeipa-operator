@@ -21,14 +21,6 @@ deploy-cluster: deploy
 undeploy-cluster: deploy
 	$(call deprecated-rule,$@,$<)
 
-.PHONY: container-build
-container-build: docker-build
-	$(call deprecated-rule,$@,$<)
-
-.PHONY: container-push
-container-push: docker-push
-	$(call deprecated-rule,$@,$<)
-
 ## >>NOTE<< Obsolete rules, they will fails
 
 .PHONY: container-build-root

@@ -109,14 +109,6 @@ build: generate fmt vet ## Build manager binary.
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./main.go
 
-.PHONY: docker-build
-docker-build:  ## Build docker image with the manager.
-	$(CONTAINER_ENGINE) build -t $(IMG) .
-
-.PHONY: docker-push
-docker-push: ## Push docker image with the manager.
-	$(CONTAINER_ENGINE) push $(IMG)
-
 ##@ Deployment
 
 ifndef ignore-not-found
