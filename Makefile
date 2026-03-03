@@ -1,4 +1,3 @@
-
 include mk/variables.mk
 include mk/macros.mk
 
@@ -112,11 +111,11 @@ run: manifests generate fmt vet ## Run a controller from your host.
 
 .PHONY: docker-build
 docker-build:  ## Build docker image with the manager.
-	docker build -t ${IMG} .
+	$(CONTAINER_ENGINE) build -t $(IMG) .
 
 .PHONY: docker-push
 docker-push: ## Push docker image with the manager.
-	docker push ${IMG}
+	$(CONTAINER_ENGINE) push $(IMG)
 
 ##@ Deployment
 
