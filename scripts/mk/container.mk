@@ -1,7 +1,7 @@
-ifneq ($(shell which podman 2>/dev/null),podman)
+ifneq (,$(shell which podman 2>/dev/null))
 CONTAINER_ENGINE ?= podman
 else
-ifneq ($(shell which docker 2>/dev/null),podman)
+ifneq (,$(shell which docker 2>/dev/null))
 CONTAINER_ENGINE ?= docker
 else
 CONTAINER_ENGINE ?= false
