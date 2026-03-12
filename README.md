@@ -18,7 +18,7 @@ Experimental freeipa-operator for Freeipa.
 1. Install the necessary tools by:
 
    ```sh
-   ./devel/install-local-tools.sh
+   make install-tools
    ```
 
 1. Build by:

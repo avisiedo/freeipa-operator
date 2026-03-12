@@ -107,10 +107,10 @@ func (r *IDM) ValidateCreate() error {
 // ValidateUpdate implements webhook.Validator so a webhook will be registered for the type
 // This method validate that the new resource is not changed for
 // the fields considered immutable.
-// - Realm can not be changed once the IDM has been created.
-// - Resources can not be changed as the PodSpec does not allow it.
-// - VolumeClaimTemplate can not be changes once the IDM resource
-//   has been created.
+//   - Realm can not be changed once the IDM has been created.
+//   - Resources can not be changed as the PodSpec does not allow it.
+//   - VolumeClaimTemplate can not be changes once the IDM resource
+//     has been created.
 func (r *IDM) ValidateUpdate(oldRaw runtime.Object) error {
 	idmlog.Info("validate update", "name", r.Name)
 
