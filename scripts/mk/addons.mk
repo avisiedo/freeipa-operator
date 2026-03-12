@@ -24,13 +24,13 @@ export PATH
 PATH:="$(PATH):$(PWD)/tools/bin"
 
 # Include sample rules
-include mk/container.mk
-include mk/scorecard.mk
-include mk/checks.mk
-include mk/samples.mk
-include mk/cert-manager.mk
-include mk/miscelanea.mk
-include mk/deprecated.mk
-include mk/bundle.mk
-include mk/tools.mk
-include mk/tools-2.mk
+include scripts/mk/container.mk
+include scripts/mk/scorecard.mk
+include scripts/mk/checks.mk
+include scripts/mk/samples.mk
+include scripts/mk/cert-manager.mk
+include scripts/mk/miscelanea.mk
+include scripts/mk/deprecated.mk
+include scripts/mk/bundle.mk
+include scripts/mk/tools.mk
+include scripts/mk/tools-2.mk

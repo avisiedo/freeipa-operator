@@ -1,5 +1,5 @@
-include mk/variables.mk
-include mk/macros.mk
+include scripts/mk/variables.mk
+include scripts/mk/macros.mk
 
 # VERSION defines the project version for the bundle.
 # Update this value when you upgrade the version of your project.
@@ -220,4 +220,4 @@ catalog-build: opm ## Build a catalog image.
 catalog-push: catalog-build ## Push a catalog image.
 	$(MAKE) docker-push IMG=$(CATALOG_IMG)
 
-include mk/addons.mk
+include scripts/mk/addons.mk
