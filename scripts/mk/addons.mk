@@ -20,9 +20,6 @@ WATCH_NAMESPACE ?= $(shell oc project -q 2>/dev/null)
 export WATCH_NAMESPACE
 endif
 
-export PATH
-PATH:="$(PATH):$(PWD)/tools/bin"
-
 # Include sample rules
 include scripts/mk/container.mk
 include scripts/mk/scorecard.mk
