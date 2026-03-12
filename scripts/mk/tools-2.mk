@@ -4,17 +4,6 @@
 # the generated binaries.
 ##
 
-GOVERSION := 1.25.0
-export GOVERSION
-
-GOSUMDB := sum.golang.org
-export GOSUMDB
-
-ifeq (,$(shell ls -1d vendor 2>/dev/null))
-MOD_VENDOR :=
-else
-MOD_VENDOR ?= -mod vendor
-endif
 
 # Tools and their dependencies
 # Build dependencies
@@ -27,6 +16,10 @@ YQ := $(TOOLS_BIN)/yq
 GOTESTFMT := $(TOOLS_BIN)/gotestfmt
 GOCOVER_COBERTURA := $(TOOLS_BIN)/gocover-cobertura
 KUSTOMIZE := $(TOOLS_BIN)/kustomize
+CONTROLLER_GEN := $(TOOLS_BIN)/controller-gen
+OPM := $(TOOLS_BIN)/opm
+OPERATOR_SDK := $(TOOLS_BIN)/operator-sdk
+ENVTEST := $(TOOLS_BIN)/setup-envtest
 
 TOOLS := \
 	$(GOLANGCI_LINT) \
@@ -36,6 +29,10 @@ TOOLS := \
 	$(GOTESTFMT) \
 	$(GOCOVER_COBERTURA) \
 	$(KUSTOMIZE) \
+	$(CONTROLLER_GEN) \
+	$(OPM) \
+	$(OPERATOR_SDK) \
+	$(ENVTEST) \
 
 
 .PHONY: install-go-tools
@@ -59,8 +56,3 @@ $(TOOLS): $(TOOLS_DEPS)
 
 $(TOOLS_BIN)/%: $(TOOLS_DEPS)
 	cd tools && GOBIN="$(TOOLS_BIN)" go install $(shell grep $(notdir $@) tools/tools.go | awk '{print $$2}')
-
-.PHONY: tidy-tools
-tidy-tools:
-	cd tools && go mod tidy -go=$(GOVERSION)
-

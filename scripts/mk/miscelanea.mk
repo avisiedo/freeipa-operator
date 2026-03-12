@@ -27,6 +27,7 @@ lint:  ## Run linters
 .PHONY: tidy
 tidy:  ## Update golang dependencies
 	go mod tidy
+	cd tools && go mod tidy
 
 .PHONY: vendor
 vendor:  ## Update vendor directory
